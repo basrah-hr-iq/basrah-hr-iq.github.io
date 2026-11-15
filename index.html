@@ -90,7 +90,7 @@ footer{text-align:center;color:var(--mut);font-size:.86rem;padding:8px 0 28px;li
       <div class="step show" data-s="0">
         <h3 class="t">البيانات الشخصية</h3>
         <div class="full"><label>الاسم الثلاثي *</label><input id="name" required minlength="6"></div>
-        <div><label>العمر *</label><input id="age" type="number" min="18" max="70" required></div>
+        <div><label>المواليد (سنة الميلاد) *</label><input id="birth" type="number" inputmode="numeric" min="1950" max="2008" placeholder="مثال: 1995" required></div>
         <div><label>الجنس *</label><div class="seg"><label><input type="radio" name="gender" value="ذكر" required><span>ذكر</span></label><label><input type="radio" name="gender" value="أنثى"><span>أنثى</span></label></div></div>
         <div><label>رقم الهاتف *</label><input id="phone" type="tel" inputmode="tel" placeholder="07xxxxxxxxx" required pattern="[0-9+\s]{9,15}"></div>
         <div><label>البريد الإلكتروني *</label><input id="email" type="email" required dir="ltr" style="text-align:right"></div>
@@ -148,15 +148,15 @@ footer{text-align:center;color:var(--mut);font-size:.86rem;padding:8px 0 28px;li
         <select id="fS"><option value="">كل الحالات</option><option>قيد المراجعة</option><option>مقبول</option><option>مرفوض</option></select>
       </div>
       <div class="bar"><b id="count" style="color:var(--navy)">0 متقدم</b><span style="flex:1"></span><button class="btn-g" id="xlsBtn">تصدير Excel</button><button class="btn2" id="logoutBtn">خروج</button></div>
-      <div class="tw"><table><thead><tr><th>#</th><th>رقم الطلب</th><th>الاسم</th><th>العمر</th><th>الجنس</th><th>الهاتف</th><th>الإيميل</th><th>الاختصاص</th><th>العمل السابق</th><th>السكن</th><th>النبذة</th><th>الحالة</th><th>ملاحظات</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody id="rows"></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>#</th><th>رقم الطلب</th><th>الاسم</th><th>المواليد</th><th>الجنس</th><th>الهاتف</th><th>الإيميل</th><th>الاختصاص</th><th>العمل السابق</th><th>السكن</th><th>النبذة</th><th>الحالة</th><th>ملاحظات</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody id="rows"></tbody></table></div>
     </div>
   </div>
-  <footer>هيئة استثمار البصرة — قسم الموارد البشرية<br>تصميم وبرمجة: <b>علي مصطفى عبد</b></footer>
+  <footer>هيئة استثمار البصرة — قسم الموارد البشرية</footer>
 </div>
 
 <dialog id="dlg"><h3 style="margin-top:0;color:var(--navy)">تعديل بيانات المتقدم</h3>
   <div class="g">
-    <div><label>الاسم</label><input id="e_name"></div><div><label>العمر</label><input id="e_age" type="number"></div>
+    <div><label>الاسم</label><input id="e_name"></div><div><label>المواليد</label><input id="e_birth" type="number"></div>
     <div><label>الجنس</label><select id="e_gender"><option>ذكر</option><option>أنثى</option></select></div><div><label>الهاتف</label><input id="e_phone"></div>
     <div><label>الإيميل</label><input id="e_email" dir="ltr"></div><div><label>الحالة</label><select id="e_status"><option>قيد المراجعة</option><option>مقبول</option><option>مرفوض</option></select></div>
     <div><label>الاختصاص</label><input id="e_spec"></div><div><label>العمل السابق</label><input id="e_prev"></div>
@@ -204,7 +204,7 @@ document.querySelectorAll('[data-next]').forEach(b => b.onclick = () => okStep()
 document.querySelectorAll('[data-prev]').forEach(b => b.onclick = () => go(cur - 1));
 const gender = () => (document.querySelector('input[name=gender]:checked') || {}).value || '';
 function buildReview() {
-  const r = [['الاسم', $('name').value], ['العمر', $('age').value], ['الجنس', gender()], ['الهاتف', $('phone').value], ['الإيميل', $('email').value], ['الاختصاص', $('spec').value], ['العمل السابق', $('prev').value || '—'], ['السكن', $('addr').value]];
+  const r = [['الاسم', $('name').value], ['المواليد', $('birth').value], ['الجنس', gender()], ['الهاتف', $('phone').value], ['الإيميل', $('email').value], ['الاختصاص', $('spec').value], ['العمل السابق', $('prev').value || '—'], ['السكن', $('addr').value]];
   $('rev').innerHTML = '<b>مراجعة البيانات:</b><br>' + r.map(x => `${x[0]}: <b>${esc(x[1])}</b>`).join(' &nbsp;|&nbsp; ');
 }
 
@@ -219,7 +219,7 @@ $('regForm').addEventListener('submit', async e => {
   if (!okStep()) return;
   $('sendBtn').disabled = true;
   const reqNo = 'BIC-' + Math.floor(100000 + Math.random() * 900000);
-  const data = { reqNo, name: $('name').value.trim(), age: +$('age').value, gender: gender(), phone: $('phone').value.trim(), email: $('email').value.trim(), spec: $('spec').value.trim(), prev: $('prev').value.trim(), addr: $('addr').value.trim(), bio: $('bio').value.trim(), status: ST[0], note: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+  const data = { reqNo, name: $('name').value.trim(), birth: +$('birth').value, gender: gender(), phone: $('phone').value.trim(), email: $('email').value.trim(), spec: $('spec').value.trim(), prev: $('prev').value.trim(), addr: $('addr').value.trim(), bio: $('bio').value.trim(), status: ST[0], note: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() };
   try {
     await db.collection('submissions').doc(data.phone.replace(/\D/g, '')).set(data);
     const url = await loadWa();
@@ -271,7 +271,7 @@ function render() {
   const list = filtered(); $('count').textContent = list.length + ' متقدم';
   $('rows').innerHTML = list.map((r, i) => {
     const st = r.status || ST[0], k = ST.indexOf(st);
-    return `<tr><td>${i + 1}</td><td dir="ltr">${esc(r.reqNo)}</td><td>${esc(r.name)}</td><td>${esc(r.age)}</td><td>${esc(r.gender)}</td><td dir="ltr">${esc(r.phone)}</td><td dir="ltr">${esc(r.email)}</td><td>${esc(r.spec)}</td><td>${esc(r.prev)}</td><td>${esc(r.addr)}</td><td class="long">${esc(r.bio)}</td>
+    return `<tr><td>${i + 1}</td><td dir="ltr">${esc(r.reqNo)}</td><td>${esc(r.name)}</td><td>${esc(r.birth ?? (r.age ? 'عمر ' + r.age : ''))}</td><td>${esc(r.gender)}</td><td dir="ltr">${esc(r.phone)}</td><td dir="ltr">${esc(r.email)}</td><td>${esc(r.spec)}</td><td>${esc(r.prev)}</td><td>${esc(r.addr)}</td><td class="long">${esc(r.bio)}</td>
     <td><select class="st st-${k}" data-id="${r.id}">${ST.map(x => `<option${x === st ? ' selected' : ''}>${x}</option>`).join('')}</select></td>
     <td class="long">${esc(r.note)}</td><td>${esc(fmt(r))}</td>
     <td><button class="ab e" data-e="${r.id}">تعديل</button><button class="ab d" data-d="${r.id}">حذف</button></td></tr>`;
@@ -286,7 +286,7 @@ $('rows').addEventListener('click', async e => {
 });
 
 /* ===== التعديل ===== */
-const F = ['name', 'age', 'gender', 'phone', 'email', 'spec', 'prev', 'addr', 'bio', 'status', 'note'];
+const F = ['name', 'birth', 'gender', 'phone', 'email', 'spec', 'prev', 'addr', 'bio', 'status', 'note'];
 function openEdit(id) {
   const r = all.find(x => x.id === id); if (!r) return; editId = id;
   F.forEach(f => $('e_' + f).value = r[f] ?? (f === 'status' ? ST[0] : ''));
@@ -294,13 +294,13 @@ function openEdit(id) {
 }
 $('e_cancel').onclick = () => $('dlg').close();
 $('e_save').onclick = async () => {
-  const o = {}; F.forEach(f => o[f] = $('e_' + f).value.trim()); o.age = +o.age || null;
+  const o = {}; F.forEach(f => o[f] = $('e_' + f).value.trim()); o.birth = +o.birth || null;
   try { await db.collection('submissions').doc(editId).update(o); $('dlg').close(); } catch (e) { alert('تعذّر حفظ التعديلات'); }
 };
 
 /* ===== تصدير Excel ===== */
 $('xlsBtn').onclick = () => {
-  const rows = filtered().map((r, i) => ({ '#': i + 1, 'رقم الطلب': r.reqNo, 'الاسم': r.name, 'العمر': r.age, 'الجنس': r.gender, 'الهاتف': r.phone, 'الإيميل': r.email, 'الاختصاص الدقيق': r.spec, 'مكان العمل السابق': r.prev, 'السكن': r.addr, 'نبذة': r.bio, 'الحالة': r.status || ST[0], 'ملاحظات الإدارة': r.note, 'تاريخ التسجيل': fmt(r) }));
+  const rows = filtered().map((r, i) => ({ '#': i + 1, 'رقم الطلب': r.reqNo, 'الاسم': r.name, 'المواليد': r.birth ?? r.age, 'الجنس': r.gender, 'الهاتف': r.phone, 'الإيميل': r.email, 'الاختصاص الدقيق': r.spec, 'مكان العمل السابق': r.prev, 'السكن': r.addr, 'نبذة': r.bio, 'الحالة': r.status || ST[0], 'ملاحظات الإدارة': r.note, 'تاريخ التسجيل': fmt(r) }));
   const ws = XLSX.utils.json_to_sheet(rows); ws['!cols'] = [6, 14, 24, 8, 8, 16, 26, 24, 24, 22, 50, 14, 30, 20].map(w => ({ wch: w }));
   const wb = XLSX.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
   XLSX.utils.book_append_sheet(wb, ws, 'المتقدمون'); XLSX.writeFile(wb, 'الموظفون_الجدد.xlsx');
